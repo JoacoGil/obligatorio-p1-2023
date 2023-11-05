@@ -12,8 +12,8 @@ class Equipo:
     def agregar_piloto_titular(self, piloto):
         self.pilotos_titulares.append(piloto)
 
-    def agregar_piloto_reserva(self, piloto):
-        self.piloto_reserva = piloto
+    def agregar_piloto_reserva(self, pilotoReserva):
+        self.piloto_reserva = pilotoReserva
 
     def agregar_mecanico(self, mecanico):
         self.mecanicos.append(mecanico)
@@ -23,3 +23,11 @@ class Equipo:
 
     def asignar_auto(self, auto):
         self.auto = auto
+
+    def get_all_empleados(self):
+        empleados = []
+        empleados.append(self.director)
+        empleados.extend(self.pilotos_titulares)
+        empleados.append(self.piloto_reserva)
+        empleados.extend(self.mecanicos)
+        return empleados

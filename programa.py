@@ -1,5 +1,6 @@
 from Equipo import Equipo
 from Piloto import Piloto
+from PilotoReserva import PilotoReserva
 from Mecanico import Mecanico
 from DirectorEquipo import DirectorEquipo
 from Auto import Auto
@@ -106,17 +107,25 @@ class ProgramaF1:
 
     def alta_empleado(self):
         print("\n--- Alta de Empleado ---")
-
+        
         # Solicitar datos generales del empleado
-        id = input("Ingrese cedula: ")
-        if not id.isdigit() or len(id) != 8:
+        while True:
+            try:
+                id = input("Ingrese cedula: ")
+                if not id.isdigit() or len(id) != 8:
                     raise ValueError("La cédula debe contener exactamente 8 dígitos sin puntos ni guiones.")
+                break
+            except ValueError as e:
+                print(e)
         nombre = input("Ingrese nombre: ")
-        edad = int(input("Ingrese edad: "))
         fecha_nacimiento = input("Ingrese fecha de nacimiento (DD/MM/AAAA): ")
         nacionalidad = input("Ingrese nacionalidad: ")
-        salario = float(input("Ingrese salario: "))
-
+        while True:
+            try:
+                salario = float(input("Ingrese salario: "))
+                break
+            except ValueError:
+                print("El salario debe ser un número.")
         # Validar y solicitar el tipo de empleado
         while True:
             print("Seleccione el cargo:")
@@ -133,25 +142,50 @@ class ProgramaF1:
 
         if cargo == "1":
             # Alta de piloto
-            score = float(input("Ingrese score: "))
-            numero_auto = int(input("Ingrese número de auto: "))
-            empleado = Piloto(id, nombre, edad, nacionalidad, fecha_nacimiento, salario, score, numero_auto, 0, False)
+            while True:
+                try:
+                    score = float(input("Ingrese score: "))
+                    break
+                except ValueError:
+                    print("El score debe ser un número.")
+            while True:
+                try:
+                    numero_auto = int(input("Ingrese número de auto: "))
+                    break
+                except ValueError:
+                    print("El número de auto debe ser un número entero.")
+            empleado = Piloto(id, nombre, nacionalidad, fecha_nacimiento, salario, score, numero_auto, 0, False)
             
 
         elif cargo == "2":
             # Alta de piloto de reserva
-            score = float(input("Ingrese score: "))
-            numero_auto = int(input("Ingrese número de auto: "))
-            empleado = Piloto(id, nombre, edad, nacionalidad, fecha_nacimiento, salario, score, numero_auto, 0, False)
+            while True:
+                try:
+                    score = float(input("Ingrese score: "))
+                    break
+                except ValueError:
+                    print("El score debe ser un número.")
+            while True:
+                try:
+                    numero_auto = int(input("Ingrese número de auto: "))
+                    break
+                except ValueError:
+                    print("El número de auto debe ser un número entero.")
+            empleado = PilotoReserva(id, nombre, nacionalidad, fecha_nacimiento, salario, score, numero_auto, 0, False)
 
         elif cargo == "3":
             # Alta de mecánico
-            score = float(input("Ingrese score: "))
-            empleado = Mecanico(id, nombre, edad, nacionalidad, fecha_nacimiento, salario, score)
+            while True:
+                try:
+                    score = float(input("Ingrese score: "))
+                    break
+                except ValueError:
+                    print("El score debe ser un número.")
+            empleado = Mecanico(id, nombre, nacionalidad, fecha_nacimiento, salario, score)
 
         elif cargo == "4":
             # Alta de jefe de equipo
-            empleado = DirectorEquipo(id, nombre, edad, nacionalidad, fecha_nacimiento, salario)
+            empleado = DirectorEquipo(id, nombre, nacionalidad, fecha_nacimiento, salario)
 
         if empleado:
             # Agregar el empleado a la lista de empleados
@@ -159,24 +193,116 @@ class ProgramaF1:
             print("Empleado ingresado correctamente.")
 
     def alta_auto(self):
-        # Implementar la lógica para dar de alta un auto
-        pass
+        print("\n--- Alta de Auto ---")
+        modelo = input("Ingrese modelo: ")
+        while True:
+            try:
+                score = float(input("Ingrese score: "))
+                break
+            except ValueError:
+                print("El score debe ser un número.")
+        color = input("Ingrese color: ")
+        
+        nuevo_auto = Auto(modelo, score, color)
+        self.autos.append(nuevo_auto)
+
+        print(f"Auto creado: Modelo={nuevo_auto.modelo}, Score={nuevo_auto.score}, Color={nuevo_auto.color}")
+        
 
     def alta_equipo(self):
         # Implementar la lógica para dar de alta un equipo
-        pass
+        print("\n--- Alta de Equipo ---")
+
+        nombre_equipo = input("Ingrese nombre del equipo: ")
+        pais_equipo = input("Ingrese país del equipo: ")
+        año_equipo = input("Ingrese año de creación del equipo: ")
+
+        nuevo_equipo = Equipo(nombre_equipo, pais_equipo, año_equipo)
+        
+        print(" -- Asignar modelo de auto -- ")
+
+        modelo_auto = input("Ingrese modelo de auto: ")
+
+        # Buscar auto por modelo
+        if modelo_auto not in [auto.modelo for auto in self.autos]:
+            print("Ese modelo de auto no existe.")
+            return
+        
+        # Asignar auto al equipo
+        nuevo_equipo.asignar_auto(modelo_auto)
+
+        # Asignar empleados al equipo
+        print(" -- Asignar empleados al equipo -- ")
+
+        ci_empleados = []
+        cant_pilotos = 0
+        cant_mecanicos = 0
+        cant_directores = 0
+        cant_pilotos_reserva = 0
+
+        for i in range(12):
+            cedula_empleado = input(f"Ingrese cédula del empleado {i+1}: ")
+            # Buscar empleado por cedula
+            empleado = [empleado for empleado in self.empleados if empleado.id == cedula_empleado]
+            if not empleado:
+                print("Ese empleado no existe.")
+                return
+            # Verificar que el empleado no haya sido asignado a este equipo
+            if cedula_empleado in ci_empleados:
+                print("Ese empleado ya está asignado a este equipo.")
+                return
+            ci_empleados.append(cedula_empleado)
+            # Verificar que el empleado no haya sido asignado a otro equipo
+            if not self.is_employee_available(cedula_empleado):
+                print("Ese empleado ya está asignado a otro equipo.")
+                return
+            # Asignar empleado al equipo
+            empleado = empleado[0]
+            if isinstance(empleado, Piloto) and cant_pilotos < 2:
+                nuevo_equipo.agregar_piloto_titular(empleado)
+                cant_pilotos += 1
+            elif isinstance(empleado, Mecanico) and cant_mecanicos < 8:
+                nuevo_equipo.agregar_mecanico(empleado)
+                cant_mecanicos += 1
+            elif isinstance(empleado, DirectorEquipo) and cant_directores < 1:
+                nuevo_equipo.asignar_director(empleado)
+                cant_directores += 1
+            elif isinstance(empleado, PilotoReserva) and cant_pilotos_reserva < 1:
+                nuevo_equipo.agregar_piloto_reserva(empleado)
+                cant_pilotos_reserva += 1
+
+        self.equipos.append(nuevo_equipo)
+        print(f"Equipo creado: Nombre={nuevo_equipo.nombre}, País={nuevo_equipo.pais}, Año de creación={nuevo_equipo.año_creacion}")
+
+    def is_employee_available(self, employee_id):
+                for team in self.equipos:
+                    for employee in team.get_all_empleados():
+                        if employee.get_id() == employee_id:
+                            return False
+                return True
 
     def simular_carrera(self):
         # Implementar la lógica para simular una carrera
+        print("\n--- Simular Carrera ---")
+
+        self.lesionados = []
+        self.abandonan = []
+        self.error_en_pits = []
+        self.penalizados = []
+
+        lesionados = input("Ingrese nro de auto de todos los pilotos lesionados: ").split(',')
+        abandonan = input("Ingrese nro auto de todos los pilotos que abandonan separado por coma: ").split(',')
+        error_en_pits = input("Ingrese nro de auto de todos los pilotos que comente error en pits: ").split(',')
+        penalizados = input("Ingrese nro de auto de todos los pilotos que reciben penalidad: ").split(',')
+
         pass
 
     def realizar_consultas(self):
         # Implementar la lógica para realizar consultas
+        print("\n--- Realizar Consultas ---")
         pass
 
 # Función principal para ejecutar el programa
 if __name__ == "__main__":
     programa = ProgramaF1()
     programa.ejecutar()
-
-
