@@ -210,7 +210,6 @@ class ProgramaF1:
         
 
     def alta_equipo(self):
-        # Implementar la lógica para dar de alta un equipo
         print("\n--- Alta de Equipo ---")
 
         nombre_equipo = input("Ingrese nombre del equipo: ")
@@ -294,8 +293,6 @@ class ProgramaF1:
         abandonan = input("Ingrese nro auto de todos los pilotos que abandonan separado por coma: ").split(',')
         error_en_pits = input("Ingrese nro de auto de todos los pilotos que comente error en pits: ").split(',')
         penalizados = input("Ingrese nro de auto de todos los pilotos que reciben penalidad: ").split(',')
-
-        pass
 
     def realizar_consultas(self):
         # Implementar la lógica para realizar consultas
