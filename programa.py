@@ -114,9 +114,16 @@ class ProgramaF1:
                 id = input("Ingrese cedula: ")
                 if not id.isdigit() or len(id) != 8:
                     raise ValueError("La cédula debe contener exactamente 8 dígitos sin puntos ni guiones.")
+                for employee in self.empleados:
+                    if employee.get_id() == id:
+                        raise ValueError("Ya existe un empleado con esa cédula.")
                 break
+                 
             except ValueError as e:
                 print(e)
+                return
+
+        
         nombre = input("Ingrese nombre: ")
         fecha_nacimiento = input("Ingrese fecha de nacimiento (DD/MM/AAAA): ")
         nacionalidad = input("Ingrese nacionalidad: ")
@@ -126,13 +133,14 @@ class ProgramaF1:
                 break
             except ValueError:
                 print("El salario debe ser un número.")
+                return
         # Validar y solicitar el tipo de empleado
         while True:
             print("Seleccione el cargo:")
             print("1. Piloto")
             print("2. Piloto de reserva")
             print("3. Mecánico")
-            print("4. Jefe de equipo")
+            print("4. Director de equipo")
             cargo = input("Opción: ")
 
             if cargo in ["1", "2", "3", "4"]:
@@ -148,12 +156,14 @@ class ProgramaF1:
                     break
                 except ValueError:
                     print("El score debe ser un número.")
+                    return
             while True:
                 try:
                     numero_auto = int(input("Ingrese número de auto: "))
                     break
                 except ValueError:
                     print("El número de auto debe ser un número entero.")
+                    return
             empleado = Piloto(id, nombre, nacionalidad, fecha_nacimiento, salario, score, numero_auto, 0, False)
             
 
@@ -165,12 +175,14 @@ class ProgramaF1:
                     break
                 except ValueError:
                     print("El score debe ser un número.")
+                    return
             while True:
                 try:
                     numero_auto = int(input("Ingrese número de auto: "))
                     break
                 except ValueError:
                     print("El número de auto debe ser un número entero.")
+                    return
             empleado = PilotoReserva(id, nombre, nacionalidad, fecha_nacimiento, salario, score, numero_auto, 0, False)
 
         elif cargo == "3":
@@ -181,10 +193,11 @@ class ProgramaF1:
                     break
                 except ValueError:
                     print("El score debe ser un número.")
+                    return
             empleado = Mecanico(id, nombre, nacionalidad, fecha_nacimiento, salario, score)
 
         elif cargo == "4":
-            # Alta de jefe de equipo
+            # Alta de Director de equipo
             empleado = DirectorEquipo(id, nombre, nacionalidad, fecha_nacimiento, salario)
 
         if empleado:
@@ -201,6 +214,8 @@ class ProgramaF1:
                 break
             except ValueError:
                 print("El score debe ser un número.")
+                return
+            
         color = input("Ingrese color: ")
         
         nuevo_auto = Auto(modelo, score, color)
