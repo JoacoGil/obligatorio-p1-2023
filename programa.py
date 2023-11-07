@@ -1,9 +1,10 @@
-from Equipo import Equipo
-from Piloto import Piloto
-from PilotoReserva import PilotoReserva
-from Mecanico import Mecanico
-from DirectorEquipo import DirectorEquipo
-from Auto import Auto
+
+from entities.Equipo import Equipo
+from entities.Piloto import Piloto
+from entities.PilotoReserva import PilotoReserva
+from entities.Mecanico import Mecanico
+from entities.DirectorEquipo import DirectorEquipo
+from entities.Auto import Auto
 
 # # Ejemplo de uso:
 # equipo1 = Equipo("Equipo A", "Argentina", "2010")
