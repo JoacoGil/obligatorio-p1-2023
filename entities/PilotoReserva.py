@@ -1,4 +1,4 @@
-from Piloto import Piloto
+from entities.Piloto import Piloto
 
 class PilotoReserva(Piloto):
     def __init__(self, id, nombre, nacionalidad, fecha_nacimiento, salario, score, numero_auto, puntaje_campeonato, lesionado):

@@ -1,75 +1,9 @@
-
 from entities.Equipo import Equipo
 from entities.Piloto import Piloto
 from entities.PilotoReserva import PilotoReserva
 from entities.Mecanico import Mecanico
 from entities.DirectorEquipo import DirectorEquipo
 from entities.Auto import Auto
-
-# # Ejemplo de uso:
-# equipo1 = Equipo("Equipo A", "Argentina", "2010")
-# piloto1 = Piloto("12345678", "Piloto 1", 30, "Nacionalidad 1", "01/01/1990", 50000, 80, 1, 100, False)
-# mecanico1 = Mecanico("23456789", "Mecánico 1", 35, "Nacionalidad 2", "15/03/1985", 40000, 90)
-# director1 = DirectorEquipo("34567890", "Director 1", 40, "Nacionalidad 3", "10/05/1980", 60000)
-# auto1 = Auto("Modelo 1", 100, "Rojo")
-
-# equipo1.agregar_piloto_titular(piloto1)
-# equipo1.agregar_mecanico(mecanico1)
-# equipo1.asignar_director(director1)
-# equipo1.asignar_auto(auto1)
-
-# # ------------------------------- Printear todas las propiedades del equipo 1 ---------------------------------------------------
-# print("Nombre del equipo:", equipo1.nombre)
-# print("País del equipo:", equipo1.pais)
-# print("Año de creación del equipo:", equipo1.año_creacion)
-# print("Pilotos titulares del equipo:")
-# for piloto in equipo1.pilotos_titulares:
-#     print("  - Nombre:", piloto.nombre)
-#     print("    ID:", piloto.id)
-#     print("    Edad:", piloto.edad)
-#     print("    Nacionalidad:", piloto.nacionalidad)
-#     print("    Fecha de nacimiento:", piloto.fecha_nacimiento)
-#     print("    Salario:", piloto.salario)
-#     print("    Score:", piloto.score)
-#     print("    Número de auto:", piloto.numero_auto)
-#     print("    Puntaje de campeonato:", piloto.puntaje_campeonato)
-#     print("    Lesionado:", piloto.lesionado)
-# if equipo1.piloto_reserva:
-#     print("Piloto reserva del equipo:")
-#     print("  - Nombre:", equipo1.piloto_reserva.nombre)
-#     print("    ID:", equipo1.piloto_reserva.id)
-#     print("    Edad:", equipo1.piloto_reserva.edad)
-#     print("    Nacionalidad:", equipo1.piloto_reserva.nacionalidad)
-#     print("    Fecha de nacimiento:", equipo1.piloto_reserva.fecha_nacimiento)
-#     print("    Salario:", equipo1.piloto_reserva.salario)
-#     print("    Score:", equipo1.piloto_reserva.score)
-#     print("    Número de auto:", equipo1.piloto_reserva.numero_auto)
-#     print("    Puntaje de campeonato:", equipo1.piloto_reserva.puntaje_campeonato)
-#     print("    Lesionado:", equipo1.piloto_reserva.lesionado)
-# print("Mecánicos del equipo:")
-# for mecanico in equipo1.mecanicos:
-#     print("  - Nombre:", mecanico.nombre)
-#     print("    ID:", mecanico.id)
-#     print("    Edad:", mecanico.edad)
-#     print("    Nacionalidad:", mecanico.nacionalidad)
-#     print("    Fecha de nacimiento:", mecanico.fecha_nacimiento)
-#     print("    Salario:", mecanico.salario)
-#     print("    Score:", mecanico.score)
-# if equipo1.director:
-#     print("Director del equipo:")
-#     print("  - Nombre:", equipo1.director.nombre)
-#     print("    ID:", equipo1.director.id)
-#     print("    Edad:", equipo1.director.edad)
-#     print("    Nacionalidad:", equipo1.director.nacionalidad)
-#     print("    Fecha de nacimiento:", equipo1.director.fecha_nacimiento)
-#     print("    Salario:", equipo1.director.salario)
-# if equipo1.auto:
-#     print("Auto del equipo:")
-#     print("  - Modelo:", equipo1.auto.modelo)
-#     print("    Score:", equipo1.auto.score)
-#     print("    Color:", equipo1.auto.color)
-# # ----------------------------------------------------------------------------------
-
 
 # Clase Principal del Programa
 class ProgramaF1:
@@ -313,7 +247,55 @@ class ProgramaF1:
     def realizar_consultas(self):
         # Implementar la lógica para realizar consultas
         print("\n--- Realizar Consultas ---")
-        pass
+        print("1. Top 10 pilotos con más puntos")
+        print("2. Resumen de campeonato de constructores")
+        print("3. Top 5 pilotos mejor pagados")
+        print("4. Top 3 pilotos más habilidosos")
+        print("5. Retornar jefes de equipo")
+
+        opcion = input("Seleccione una opción: ")
+
+        if opcion == "1":
+            self.top_10_pilotos_mas_puntos()
+        elif opcion == "2":
+            self.resumen_campeonato_constructores()
+        elif opcion == "3":
+            self.top_5_pilotos_mejor_pagados()
+        elif opcion == "4":
+            self.top_3_pilotos_mas_habilidosos()
+        elif opcion == "5":
+            self.retornar_jefes_de_equipo()
+        else:
+            print("Opción no válida.")
+            return
+        
+    def top_10_pilotos_mas_puntos(self):
+        pilotos = [pilot for team in self.equipos for pilot in team]
+        pilotos_ordenados = sorted(pilotos, key=lambda piloto: piloto.puntaje_campeonato, reverse=True)
+        return pilotos_ordenados[:10]
+    
+    def resumen_campeonato_constructores(self):
+        resumen = {}
+        for equipo in self.equipos:
+            puntos_equipo = sum(piloto.puntaje_campeonato for piloto in equipo.pilotos_titulares + [equipo.piloto_reserva] if piloto)
+            resumen[equipo.nombre] = puntos_equipo
+        return dict(sorted(resumen.items(), key=lambda x: x[1], reverse=True))
+
+    def top_5_pilotos_mejor_pagados(self):
+        pilotos = [pilot for team in self.equipos for pilot in team]
+        pilotos_ordenados = sorted(pilotos, key=lambda piloto: piloto.salario, reverse=True)
+
+        return pilotos_ordenados[:5]
+
+    def top_3_pilotos_mas_habilidosos(self):
+        pilotos = [pilot for team in self.equipos for pilot in team]
+        pilotos_ordenados = sorted(pilotos, key=lambda piloto: piloto.score, reverse=True)
+        return pilotos_ordenados[:3]
+
+    def retornar_jefes_de_equipo(self):
+        jefes = [(equipo.director.nombre, equipo.nombre) for equipo in self.equipos]
+        return sorted(jefes, key=lambda x: x[0])
+
 
 # Función principal para ejecutar el programa
 if __name__ == "__main__":
