@@ -231,18 +231,58 @@ class ProgramaF1:
                 return True
 
     def simular_carrera(self):
-        # Implementar la lógica para simular una carrera
         print("\n--- Simular Carrera ---")
 
-        self.lesionados = []
-        self.abandonan = []
-        self.error_en_pits = []
-        self.penalizados = []
+        lesionados = input("Ingrese nro de auto de todos los pilotos lesionados (separados por coma): ")
+        abandonan = input("Ingrese nro de auto de todos los pilotos que abandonan (separados por coma): ")
+        error_en_pits = input("Ingrese nro de auto de los pilotos que cometen error en pits (separados por coma): ")
+        penalizados = input("Ingrese nro de auto de los pilotos que reciben penalidad (separados por coma): ")
 
-        lesionados = input("Ingrese nro de auto de todos los pilotos lesionados: ").split(',')
-        abandonan = input("Ingrese nro auto de todos los pilotos que abandonan separado por coma: ").split(',')
-        error_en_pits = input("Ingrese nro de auto de todos los pilotos que comente error en pits: ").split(',')
-        penalizados = input("Ingrese nro de auto de todos los pilotos que reciben penalidad: ").split(',')
+        # Obtener todos los pilotos titulares de todos los equipos
+        pilotos_en_carrera = [piloto for equipo in self.equipos for piloto in equipo.get_pilotos_titulares()]
+
+        # Remover pilotos lesionados
+        for auto in lesionados.split(','):
+            piloto_lesionado = next((piloto for piloto in pilotos_en_carrera if piloto.auto.numero == int(auto)), None)
+            if piloto_lesionado in pilotos_en_carrera:
+                pilotos_en_carrera.remove(piloto_lesionado)
+
+        # Remover pilotos que abandonan
+        for auto in abandonan.split(','):
+            piloto_abandona = next((piloto for piloto in pilotos_en_carrera if piloto.auto.numero == int(auto)), None)
+            if piloto_abandona in pilotos_en_carrera:
+                pilotos_en_carrera.remove(piloto_abandona)
+
+        # Calcular puntajes finales para los pilotos que siguen en carrera
+        puntajes_finales = {}
+        for piloto in pilotos_en_carrera:
+            score_final = piloto.auto.score + piloto.score + sum(mecanico.score for mecanico in piloto.equipo.mecanicos)
+            if str(piloto.auto.numero) in error_en_pits.split(','):
+                score_final -= 5
+            if str(piloto.auto.numero) in penalizados.split(','):
+                score_final -= 8
+            if piloto.auto.numero in [int(auto) for auto in abandonan.split(',')]:
+                score_final = 0
+            puntajes_finales[piloto] = score_final
+
+        # Ordenar pilotos por puntaje final
+        pilotos_ordenados = sorted(puntajes_finales, key=puntajes_finales.get, reverse=True)
+
+        # Asignar puntos basados en el orden
+        puntos = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1]
+        for i, piloto in enumerate(pilotos_ordenados):
+            if i < len(puntos):
+                piloto.sumar_puntos(puntos[i])
+
+        # Mostrar el orden de llegada
+        print("\n--- Orden de llegada ---")
+        for i, piloto in enumerate(pilotos_ordenados):
+            print(f"{i + 1}. Piloto {piloto.nombre} del Equipo {piloto.equipo.nombre}")
+
+        # Limpiar las lesiones al final de la carrera
+        for equipo in self.equipos:
+            equipo.curar_lesiones_pilotos()
+
 
     def realizar_consultas(self):
         # Implementar la lógica para realizar consultas

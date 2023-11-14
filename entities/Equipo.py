@@ -31,3 +31,11 @@ class Equipo:
         empleados.append(self.piloto_reserva)
         empleados.extend(self.mecanicos)
         return empleados
+    
+    def get_pilotos_titulares(self):
+        return self.pilotos_titulares
+    
+    def curar_lesiones_pilotos(self):
+        for piloto in self.pilotos_titulares:
+            piloto.lesionado = False
+        self.piloto_reserva.lesionado = False
