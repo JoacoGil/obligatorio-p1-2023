@@ -1,4 +1,4 @@
-Programa de Gestión de Equipos de Fórmula 1
+Programa de Gestión de Equipos de Fórmula 1:
 Este programa permite la gestión de empleados, autos y equipos para el entorno de una competencia de Fórmula 1.
 
 ##Funcionalidades Principales##
