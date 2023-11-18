@@ -21,4 +21,15 @@ Para ejecutar el programa, se puede utilizar la clase ProgramaF1. Al iniciar el 
 ##Requisitos##
 Este programa está diseñado para trabajar con los siguientes módulos:
 •entities: Contiene las entidades necesarias para el programa (Empleado, Auto, Equipo, etc.).
-Para obtener un funcionamiento adecuado, asegurate de tener acceso a las clases y módulos importados al principio del código.
+Para obtener un funcionamiento adecuado, asegúrate de tener acceso a las clases y módulos importados al principio del código.
+
+############Relaciones entre las clases expresadas en el Diagrama de Clases############
+1. Herencia:
+•Entre Empleado, Mecanico, DirectorEquipo, PilotoReserva, y Piloto: Las clases Mecanico, DirectorEquipo y Piloto heredan los atributos y métodos de la clase Empleado, constituyendo entonces subclases de la misma. De esta misma forma, la clase PilotoReserva hereda de la clase Piloto.
+2. Composición:
+•Entre Equipo y subclases de empleados (Piloto, Mecanico, DirectorEquipo, PilotoReserva):La clase Equipo contiene directamente instancias de las subclases específicas de empleados como parte integral de su estructura. Cada instancia de Equipo contiene instancias de Piloto, Mecanico, DirectorEquipo y PilotoReserva.
+3. Asociación:
+•Entre Equipo y Auto:La clase Equipo tiene una asociación con la clase Auto al asignar un modelo de auto a un equipo específico.
+•Entre ProgramaF1, Equipo, Auto y subclases de empleados (Piloto, Mecanico, DirectorEquipo, PilotoReserva):La clase ProgramaF1 coordina las interacciones entre Equipo, Auto y las subclases de empleados, permitiendo realizar operaciones como altas de empleados, autos, equipos, simulaciones de carrera y consultas.
+Estas relaciones modelan cómo las clases interactúan entre sí en el contexto del programa de Fórmula 1, donde la clase ProgramaF1 actúa como un coordinador principal, manipulando instancias de Equipo, Auto y las diferentes subclases de empleados.
+
